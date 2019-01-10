@@ -1,40 +1,57 @@
 
-(function($) {
+(function ($) {
     "use strict";
 
     /*================================
-    Preloader
-    ==================================*/
+     Preloader
+     ==================================*/
 
     var preloader = $('#preloader');
-    $(window).on('load', function() {
-        preloader.fadeOut('slow', function() { $(this).remove(); });
+    $(window).on('load', function () {
+        preloader.fadeOut('slow', function () {
+            $(this).remove();
+        });
+    });
+
+    /*CONFIGURATION FOR ITEM ACTIVE*/
+    var pathname = window.location.pathname;
+    pathname = pathname.substring("myapp".length + 2, pathname.length);
+    var cadena_href;
+    var li;
+    $('.item').each(function (index, value) {
+        cadena_href = $(value).attr("href");
+        if (cadena_href === pathname) {
+            $(value.parentElement).addClass("active");
+            li = $(value.parentElement);
+            $(li).parents('li').addClass('active');
+            return;
+        }
     });
 
     /*================================
-    sidebar collapsing
-    ==================================*/
-    $('.nav-btn').on('click', function() {
+     sidebar collapsing
+     ==================================*/
+    $('.nav-btn').on('click', function () {
         $('.page-container').toggleClass('sbar_collapsed');
     });
 
     /*================================
-    Start Footer resizer
-    ==================================*/
-    var e = function() {
+     Start Footer resizer
+     ==================================*/
+    var e = function () {
         var e = (window.innerHeight > 0 ? window.innerHeight : this.screen.height) - 5;
         (e -= 67) < 1 && (e = 1), e > 67 && $(".main-content").css("min-height", e + "px")
     };
     $(window).ready(e), $(window).on("resize", e);
 
     /*================================
-    sidebar menu
-    ==================================*/
+     sidebar menu
+     ==================================*/
     $("#menu").metisMenu();
 
     /*================================
-    slimscroll activation
-    ==================================*/
+     slimscroll activation
+     ==================================*/
     $('.menu-inner').slimScroll({
         height: 'auto'
     });
@@ -52,12 +69,12 @@
     });
 
     /*================================
-    stickey Header
-    ==================================*/
-    $(window).on('scroll', function() {
+     stickey Header
+     ==================================*/
+    $(window).on('scroll', function () {
         var scroll = $(window).scrollTop(),
-            mainHeader = $('#sticky-header'),
-            mainHeaderHeight = mainHeader.innerHeight();
+                mainHeader = $('#sticky-header'),
+                mainHeaderHeight = mainHeader.innerHeight();
 
         // console.log(mainHeader.innerHeight());
         if (scroll > 1) {
@@ -68,17 +85,17 @@
     });
 
     /*================================
-    form bootstrap validation
-    ==================================*/
+     form bootstrap validation
+     ==================================*/
     $('[data-toggle="popover"]').popover()
 
     /*------------- Start form Validation -------------*/
-    window.addEventListener('load', function() {
+    window.addEventListener('load', function () {
         // Fetch all the forms we want to apply custom Bootstrap validation styles to
         var forms = document.getElementsByClassName('needs-validation');
         // Loop over them and prevent submission
-        var validation = Array.prototype.filter.call(forms, function(form) {
-            form.addEventListener('submit', function(event) {
+        var validation = Array.prototype.filter.call(forms, function (form) {
+            form.addEventListener('submit', function (event) {
                 if (form.checkValidity() === false) {
                     event.preventDefault();
                     event.stopPropagation();
@@ -89,8 +106,8 @@
     }, false);
 
     /*================================
-    datatable active
-    ==================================*/
+     datatable active
+     ==================================*/
     if ($('#dataTable').length) {
         $('#dataTable').DataTable({
             responsive: true
@@ -109,35 +126,35 @@
 
 
     /*================================
-    Slicknav mobile menu
-    ==================================*/
+     Slicknav mobile menu
+     ==================================*/
     $('ul#nav_menu').slicknav({
         prependTo: "#mobile_menu"
     });
 
     /*================================
-    login form
-    ==================================*/
-    $('.form-gp input').on('focus', function() {
+     login form
+     ==================================*/
+    $('.form-gp input').on('focus', function () {
         $(this).parent('.form-gp').addClass('focused');
     });
-    $('.form-gp input').on('focusout', function() {
+    $('.form-gp input').on('focusout', function () {
         if ($(this).val().length === 0) {
             $(this).parent('.form-gp').removeClass('focused');
         }
     });
 
     /*================================
-    slider-area background setting
-    ==================================*/
-    $('.settings-btn, .offset-close').on('click', function() {
+     slider-area background setting
+     ==================================*/
+    $('.settings-btn, .offset-close').on('click', function () {
         $('.offset-area').toggleClass('show_hide');
         $('.settings-btn').toggleClass('active');
     });
 
     /*================================
-    Owl Carousel
-    ==================================*/
+     Owl Carousel
+     ==================================*/
     function slider_area() {
         var owl = $('.testimonial-carousel').owlCarousel({
             margin: 50,
@@ -170,12 +187,12 @@
     slider_area();
 
     /*================================
-    Fullscreen Page
-    ==================================*/
+     Fullscreen Page
+     ==================================*/
 
     if ($('#full-view').length) {
 
-        var requestFullscreen = function(ele) {
+        var requestFullscreen = function (ele) {
             if (ele.requestFullscreen) {
                 ele.requestFullscreen();
             } else if (ele.webkitRequestFullscreen) {
@@ -189,7 +206,7 @@
             }
         };
 
-        var exitFullscreen = function() {
+        var exitFullscreen = function () {
             if (document.exitFullscreen) {
                 document.exitFullscreen();
             } else if (document.webkitExitFullscreen) {
@@ -206,13 +223,13 @@
         var fsDocButton = document.getElementById('full-view');
         var fsExitDocButton = document.getElementById('full-view-exit');
 
-        fsDocButton.addEventListener('click', function(e) {
+        fsDocButton.addEventListener('click', function (e) {
             e.preventDefault();
             requestFullscreen(document.documentElement);
             $('body').addClass('expanded');
         });
 
-        fsExitDocButton.addEventListener('click', function(e) {
+        fsExitDocButton.addEventListener('click', function (e) {
             e.preventDefault();
             exitFullscreen();
             $('body').removeClass('expanded');
