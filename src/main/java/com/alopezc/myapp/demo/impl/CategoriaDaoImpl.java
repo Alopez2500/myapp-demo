@@ -1,4 +1,4 @@
- /*
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -25,15 +25,15 @@ import javax.sql.DataSource;
  * @author AlopezCarrillo2500
  */
 public class CategoriaDaoImpl implements CategoriaDao {
-
+    
     private static final Logger LOG = Logger.getLogger(CategoriaDaoImpl.class.getName());
-
+    
     private final DataSource pool;
-
+    
     public CategoriaDaoImpl(DataSource pool) {
         this.pool = pool;
     }
-
+    
     @Override
     public BEAN_PAGINATION getPagination(HashMap<String, Object> parameters, Connection conn) throws SQLException {
         BEAN_PAGINATION bean_pagination = new BEAN_PAGINATION();
@@ -41,11 +41,12 @@ public class CategoriaDaoImpl implements CategoriaDao {
         PreparedStatement pst;
         ResultSet rs;
         try {
-            pst = conn.prepareStatement("SELECT COUNT (IDCATEGORIA) FROM CATEGORIA WHERE NOMBRE LIKE CONCAT ('%',?,'%')");
+            pst = conn.prepareStatement("SELECT COUNT (IDCATEGORIA) AS COUNT  FROM CATEGORIA WHERE NOMBRE LIKE CONCAT ('%',?,'%')");
             pst.setString(1, String.valueOf(parameters.get("FILTER")));
             LOG.info(pst.toString());
             rs = pst.executeQuery();
             while (rs.next()) {
+                LOG.info(String.valueOf(rs.getInt("COUNT")));
                 if (rs.getInt("COUNT") > 0) {
                     bean_pagination.setCOUNT_FILTER(rs.getInt("COUNT"));
                     pst = conn.prepareStatement("SELECT * FROM CATEGORIA WHERE NOMBRE LIKE CONCAT ('%',?,'%')"
@@ -69,7 +70,7 @@ public class CategoriaDaoImpl implements CategoriaDao {
         }
         return bean_pagination;
     }
-
+    
     @Override
     public BEAN_PAGINATION getPagination(HashMap<String, Object> parameters) throws SQLException {
         BEAN_PAGINATION bean_pagination = null;
@@ -80,14 +81,14 @@ public class CategoriaDaoImpl implements CategoriaDao {
         }
         return bean_pagination;
     }
-
+    
     @Override
     public BEAN_CRUD add(Categoria obj, HashMap<String, Object> parameters) throws SQLException {
         BEAN_CRUD bean_crud = new BEAN_CRUD();
         PreparedStatement pst;
         ResultSet rs;
         try (Connection conn = this.pool.getConnection();
-                SQLCloseable  finish = conn::rollback;) {
+                SQLCloseable finish = conn::rollback;) {
             conn.setAutoCommit(false);
             pst = conn.prepareStatement("SELECT COUNT (IDCATEGORIA) FROM CATEGORIA WHERE NOMBRE = ? ");
             pst.setString(1, obj.getNombre());
@@ -102,7 +103,7 @@ public class CategoriaDaoImpl implements CategoriaDao {
                     conn.commit();
                     bean_crud.setMENSSAGE_SERVER("ok");
                     bean_crud.setBEAN_PAGINATION(getPagination(parameters, conn));
-
+                    
                 } else {
                     bean_crud.setMENSSAGE_SERVER("No se registro, ya existe una Categoria con el nombre ingresado");
                 }
@@ -114,7 +115,7 @@ public class CategoriaDaoImpl implements CategoriaDao {
         }
         return bean_crud;
     }
-
+    
     @Override
     public BEAN_CRUD update(Categoria obj, HashMap<String, Object> parameters) throws SQLException {
         BEAN_CRUD bean_crud = new BEAN_CRUD();
@@ -138,7 +139,7 @@ public class CategoriaDaoImpl implements CategoriaDao {
                     conn.commit();
                     bean_crud.setMENSSAGE_SERVER("ok");
                     bean_crud.setBEAN_PAGINATION(getPagination(parameters, conn));
-
+                    
                 } else {
                     bean_crud.setMENSSAGE_SERVER("No se modifico, ya existe una Categoria con el nombre ingresado");
                 }
@@ -150,7 +151,7 @@ public class CategoriaDaoImpl implements CategoriaDao {
         }
         return bean_crud;
     }
-
+    
     @Override
     public BEAN_CRUD delete(Integer id, HashMap<String, Object> parameters) throws SQLException {
         BEAN_CRUD bean_crud = new BEAN_CRUD();
@@ -170,5 +171,5 @@ public class CategoriaDaoImpl implements CategoriaDao {
         }
         return bean_crud;
     }
-
+    
 }

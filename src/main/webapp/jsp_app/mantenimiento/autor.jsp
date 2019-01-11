@@ -62,8 +62,9 @@
                                     <a href="javascript:void(0)"><i class="fa fa-tag"></i><span>Mantenimientos</span></a>
                                     <ul class="collapse">
                                         <li><a class="item" href="categoria"><i class="fa fa-cubes"></i>Categoria</a></li>
-                                        <li><a class="item" href="autor"><i class="fa fa-archive"></i> Cliente</a></li>
+                                        <li><a class="item" href="autor"><i class="fa fa-archive"></i> Autor</a></li>
                                         <li><a class="item" href="producto"><i class="fa fa-archive"></i> Producto</a></li>
+                                        <li><a class="item" href="producto"><i class="fa fa-archive"></i> Libro</a></li>
 
                                     </ul>
                                 </li>

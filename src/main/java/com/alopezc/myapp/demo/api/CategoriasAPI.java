@@ -23,7 +23,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
-import javax.ws.rs.core.Request;
 
 /**
  *
@@ -68,7 +67,7 @@ public class CategoriasAPI extends HttpServlet {
             switch (this.accion) {
                 case "paginarCategoria":
                     BEAN_PAGINATION beanpagination = this.categoriaDAO.getPagination(getParameters(request));
-                    BEAN_CRUD  beancrud=  new BEAN_CRUD(beanpagination);
+                    BEAN_CRUD beancrud = new BEAN_CRUD(beanpagination);
                     procesarCategoria(beancrud, response);
                     break;
                 case "addCategoria":
@@ -83,7 +82,7 @@ public class CategoriasAPI extends HttpServlet {
                 default:
                     request.getRequestDispatcher("/jsp_app/mantenimiento/categoria.jsp").forward(request, response);
                     break;
-                    
+
             }
         } catch (SQLException ex) {
             Logger.getLogger(CategoriasAPI.class.getName()).log(Level.SEVERE, null, ex);
@@ -134,12 +133,18 @@ public class CategoriasAPI extends HttpServlet {
         this.parameters.clear();
         this.parameters.put("FILTER", request.getParameter("txtNombreCategoria"));
         this.parameters.put("SQL_ORDER_BY", "NOMBRE ASC");
-        this.parameters.put("SQL_LIMIT", " LIMIT " + request.getParameter("sizePageCategoria") + " offset "
-                + (Integer.parseInt(request.getParameter("numberPageCategoria")) - 1) * Integer.parseInt(request.getParameter("sizePageCategoria")));
+        if (request.getParameter("sizePageCategoria").equals("ALL")) {
+            this.parameters.put("SQL_LIMIT", "");
+        } else {
+            this.parameters.put("SQL_LIMIT", " LIMIT " + request.getParameter("sizePageCategoria") + " offset "
+                    + (Integer.parseInt(request.getParameter("numberPageCategoria")) - 1) * Integer.parseInt(request.getParameter("sizePageCategoria")));
+        }
+
         return this.parameters;
 
     }
-    private Categoria getCategoria(HttpServletRequest request){
+
+    private Categoria getCategoria(HttpServletRequest request) {
         Categoria categoria = new Categoria();
         if (request.getParameter("accion").equals("updateCategoria")) {
             categoria.setIdcategoria(Integer.parseInt(request.getParameter("txtIdCategoriaER")));

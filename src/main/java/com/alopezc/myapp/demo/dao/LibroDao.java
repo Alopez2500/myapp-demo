@@ -5,12 +5,12 @@
  */
 package com.alopezc.myapp.demo.dao;
 
-import com.alopezc.myapp.demo.model.Producto;
+import com.alopezc.myapp.demo.model.Libro;
 
 /**
  *
  * @author AlopezCarrillo2500
  */
-public interface ProductoDao extends CRUD<Producto>{
+public interface LibroDao extends CRUD<Libro>{
     
 }

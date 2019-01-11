@@ -17,6 +17,15 @@ public class Autor {
     private String telefono;
     private String direccion;
 
+    public Autor(Integer idautor) {
+        this.idautor = idautor;
+    }
+
+    
+    public Autor() {
+    }
+
+ 
     @Override
     public String toString() {
         return "Autor{" + "idautor=" + idautor + ", nombre=" + nombre + ", nombre2=" + nombre2 + ", documento=" + documento + ", telefono=" + telefono + ", direccion=" + direccion + '}';

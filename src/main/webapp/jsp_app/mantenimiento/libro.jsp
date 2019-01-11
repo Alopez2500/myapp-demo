@@ -57,14 +57,14 @@
                     <div class="menu-inner">
                         <nav>
                             <ul class="metismenu" id="menu">
-                                <li class="active"><a href=""><i class="fa fa-home"></i> <span>Inicio</span></a></li>
+                                <li class="active"><a href="index.jsp"><i class="fa fa-home"></i> <span>Inicio</span></a></li>
                                 <li>
                                     <a href="javascript:void(0)"><i class="fa fa-tag"></i><span>Mantenimientos</span></a>
                                     <ul class="collapse">
-                                        <li ><a class="item" href="categoria"><i class="fa fa-cubes"></i>Categorias</a></li>
-                                        <li ><a class="item" href="autor"><i class="fa fa-archive"></i> Autor</a></li>
+                                        <li><a class="item" href="categoria"><i class="fa fa-cubes"></i>Categoria</a></li>
+                                        <li><a class="item" href="autor"><i class="fa fa-archive"></i> Autor</a></li>
                                         <li><a class="item" href="producto"><i class="fa fa-archive"></i> Producto</a></li>
-                                        <li><a class="item" href="producto"><i class="fa fa-archive"></i> Libro</a></li>
+                                        <li><a class="item" href="libro"><i class="fa fa-archive"></i> Libro</a></li>
 
                                     </ul>
                                 </li>
@@ -106,18 +106,18 @@
                         <div class="col-12" style="padding:30px">
                             <div class="card">
                                 <div class="card-body">
-                                    <h6 id="nameCrudCategoria"> CATEGORIAS</h6>
-                                    <input type="hidden" id="nameFormCategoria" value="FrmCategoria">
-                                    <input type="hidden" id="accionCategoria" name="accion" value="paginarCategoria">
-                                    <input type="hidden" id="numberPageCategoria" name="numberPageCategoria" value="1">
-                                    <form id="FrmCategoria">
+                                    <h6 id="nameCrudLibro"> Libro </h6>
+                                    <input type="hidden" id="nameFormLibro" value="FrmLibro">
+                                    <input type="hidden" id="accionLibro" name="accion" value="paginarLibro">
+                                    <input type="hidden" id="numberPageLibro" name="numberPageLibro" value="1">
+                                    <form id="FrmLibro">
                                         <div class="row mt-3">
                                             <div class="form-group col-sm-9 col-12"> 
-                                                <input type="text" id="txtNombreCategoria" name="txtNombreCategoria" class="form-control form-control-sm" placeholder="Nombre">
+                                                <input type="text" id="txtNombreLibro" name="txtNombreLibro" class="form-control form-control-sm" placeholder="Nombre">
                                             </div>
                                             <div class="col-sm-3 col-12"> 
-                                                <button type="submit" id="btnBuscarCategoria" class="btn btn-primary btn-xs mr-3"> <i class="fa fa-search" aria-hidden="true"></i> BUSCAR</button>
-                                                <button type="button" id="btnAbrirNCategoria" class="btn btn-primary btn-xs"> <i class="fa fa-plus-square" aria-hidden="true"></i></button>
+                                                <button type="submit" id="btnBuscarLibro" class="btn btn-primary btn-xs mr-3"> <i class="fa fa-search" aria-hidden="true"></i> BUSCAR</button>
+                                                <button type="button" id="btnAbrirNLibro" class="btn btn-primary btn-xs"> <i class="fa fa-plus-square" aria-hidden="true"></i></button>
                                             </div>
                                         </div>
                                     </form>
@@ -128,10 +128,14 @@
                                                     <thead class="bg-primary">
                                                         <tr class="text-white">
                                                             <th>NOMBRES</th>
+                                                            <th>FECHA PUBLICACION</th>
+                                                            <th>GENERO</th>
+                                                            <th>EDICION</th>
+                                                            <th>AUTOR</th>
                                                             <th style="width: 15%" colspan="2">ACCIONES</th>
                                                         </tr>
                                                     </thead>
-                                                    <tbody id="tbodyCategoria">
+                                                    <tbody id="tbodyLibro">
 
                                                     </tbody>
                                                 </table>
@@ -140,7 +144,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-md-2 col-12">
-                                            <select class="form-control form-control-sm combo-paginar" id="sizePageCategoria" name="sizePageCategoria" idBtnBuscar="btnBuscarCategoria">
+                                            <select class="form-control form-control-sm combo-paginar" id="sizePageLibro" name="sizePageLibro" idBtnBuscar="btnBuscarLibro">
                                                 <option value="10">10</option>  
                                                 <option value="15">15</option>  
                                                 <option value="20">20</option>  
@@ -148,7 +152,7 @@
                                         </div>
                                         <div class="col-md-9 col-12">
                                             <nav >
-                                                <ul id="paginationCategoria" class="pagination pagination-sm justify-content-end">
+                                                <ul id="paginationLibro" class="pagination pagination-sm justify-content-end">
 
                                                 </ul>
                                             </nav>
@@ -161,12 +165,12 @@
 
                 </div>
             </div>
-            <div id="ventanaModalManCategoria" class="modal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
+            <div id="ventanaModalManLibro" class="modal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
-                        <form id="FrmCategoriaModal">
+                        <form id="FrmLibroModal">
                             <div class="modal-header">
-                                <h6 class="modal-title" id="tituloModalManCategoria"></h6>
+                                <h6 class="modal-title" id="tituloModalManLibro"></h6>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
@@ -174,12 +178,33 @@
                             <div class="modal-body">
                                 <div class="col-12">
                                     <div class="form-group">
-                                        <label for="txtNombreCategoriaER">NOMBRE</label>
-                                        <input type="text" id="txtNombreCategoriaER" name="txtNombreCategoriaER" class="form-control form-control-sm" placeholder="NOMBRE">
-                                        <div class="error-validation" id="validarNombreCategoriaER">Ingrese Categoria</div>
+                                        <label for="txtNombreLibroER">NOMBRE</label>
+                                        <input type="text" id="txtNombreLibroER" name="txtNombreLibroER" class="form-control form-control-sm" placeholder="NOMBRE">
+                                        <div class="error-validation" id="validarNombreLibroER">Ingrese Nombre</div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="txtFecha-PublicacionLibroER">FECHA DE PUBLICACION</label>
+                                        <input type="text" id="txtFecha-PublicacionLibroER" name="txtFecha-PublicacionLibroER" class="form-control form-control-sm" placeholder="FECHA DE PUBLICACION">
+                                        <div class="error-validation" id="validarFecha-PublicacionLibroER">Ingrese fecha de Publicacion</div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="txtGeneroLibroER">GENERO</label>
+                                        <input type="text" id="txtGeneroLibroER" name="txtGeneroLibroER" class="form-control form-control-sm" placeholder="GENERO">
+                                        <div class="error-validation" id="validarGeneroLibroER">Ingrese Genero</div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="txtEdicionLibroER">EDICION</label>
+                                        <input type="text" id="txtEdicionLibroER" name="txtEdicionLibroER" class="form-control form-control-sm" placeholder="EDICION">
+                                        <div class="error-validation" id="validarEdicionLibroER">Ingrese Edicion</div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="cboAutorLibroER">AUTORES</label>
+                                        <select class="form-control form-control-sm" id="cboAutorLibroER" name="cboAutorLibroER">
+                                        </select>
+                                         <div class="error-validation" id="validarAutorLibroER">Seleccione Autor</div>
                                     </div>
                                 </div>
-                                <input type="hidden" id="txtIdCategoriaER" name="txtIdCategoriaER" value="">
+                                <input type="hidden" id="txtIdLibroER" name="txtIdLibroER" value="">
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary btn-xs" data-dismiss="modal">CERRAR</button>
@@ -189,7 +214,7 @@
                     </div>
                 </div>
             </div>
-            <div class="modal" id="modalCargandoCategoria" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true" style="padding-top: 18%; overflow-y: visible;">
+            <div class="modal" id="modalCargandoLibro" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true" style="padding-top: 18%; overflow-y: visible;">
                 <div class="modal-dialog modal-sm">
                     <div class="modal-content">
                         <div class="modal-body">
@@ -244,7 +269,7 @@
     <script src="<%out.print(getServletContext().getContextPath());%>/js_app/view/jquery.Pagination.min.js"></script>
     <script src="<%out.print(getServletContext().getContextPath());%>/js_app/view/sweetalert.min.js"></script>
     <script src="<%out.print(getServletContext().getContextPath());%>/js_app/app/utilies/lib_utilies.js"></script>
-    <script src="<%out.print(getServletContext().getContextPath());%>/js_app/app/categoria.js"></script>
+    <script src="<%out.print(getServletContext().getContextPath());%>/js_app/app/libro.js"></script>
 </body>
 
 </html>

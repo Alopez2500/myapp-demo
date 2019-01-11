@@ -5,12 +5,14 @@
  */
 package com.alopezc.myapp.demo.api;
 
-import com.alopezc.myapp.demo.dao.AutorDao;
-import com.alopezc.myapp.demo.impl.AutorDaoImpl;
+import com.alopezc.myapp.demo.dao.LibroDao;
+import com.alopezc.myapp.demo.impl.LibroDaoImpl;
 import com.alopezc.myapp.demo.model.Autor;
+import com.alopezc.myapp.demo.model.Libro;
 import com.alopezc.myapp.demo.utilies.BEAN_CRUD;
-import com.alopezc.myapp.demo.utilies.BEAN_PAGINATION;
+import com.alopezc.myapp.demo.utilies.ParceDate;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -28,23 +30,24 @@ import javax.sql.DataSource;
  *
  * @author AlopezCarrillo2500
  */
-@WebServlet(name = "AutorAPI", urlPatterns = {"/autor"})
-public class AutorAPI extends HttpServlet {
+@WebServlet(name = "LibroAPI", urlPatterns = {"/libro"})
+public class LibroAPI extends HttpServlet {
 
-    private static final Logger LOG = Logger.getLogger(AutorAPI.class.getName());
+    private static final Logger LOG = Logger.getLogger(LibroAPI.class.getName());
+
     @Resource(name = "jdbc/dbmyapp")
     private DataSource pool;
     private Gson jsonParse;
     private HashMap<String, Object> parameters;
     private String json_respose;
     private String accion;
-    private AutorDao autorDao;
+    private LibroDao libroDao;
 
     @Override
     public void init() throws ServletException {
-        this.jsonParse = new Gson();
+        this.jsonParse = new GsonBuilder().setDateFormat("dd/MM/yyyy").create();
         this.parameters = new HashMap<>();
-        this.autorDao = new AutorDaoImpl(pool);
+        this.libroDao = new LibroDaoImpl(pool);
     }
 
     /**
@@ -60,32 +63,26 @@ public class AutorAPI extends HttpServlet {
             throws ServletException, IOException {
         try {
             this.accion = request.getParameter("accion") == null ? "" : request.getParameter("accion");
-            LOG.info(accion);
             switch (this.accion) {
-                case "paginarAutor":
-                    BEAN_PAGINATION beanpagination = this.autorDao.getPagination(getParameters(request));
-                    BEAN_CRUD beancrud = new BEAN_CRUD(beanpagination);
-                    procesarAutor(beancrud, response);
+                case "paginarLibro":
+                    procesarLibro(new BEAN_CRUD(this.libroDao.getPagination(getParameters(request))), response);
                     break;
-                case "addAutor":
-                    procesarAutor(this.autorDao.add(getAutor(request), getParameters(request)), response);
+                case "addLibro":
+                    procesarLibro(this.libroDao.add(getLibro(request), getParameters(request)), response);
                     break;
-                case "updateAutor":
-                    procesarAutor(this.autorDao.update(getAutor(request), getParameters(request)), response);
+                case "updateLibro":
+                    procesarLibro(this.libroDao.update(getLibro(request), getParameters(request)), response);
                     break;
-                case "deleteAutor":
-                    procesarAutor(this.autorDao.delete(Integer.parseInt(request.getParameter("txtIdAutorER")), getParameters(request)), response);
+                case "deleteLibro":
+                    procesarLibro(this.libroDao.delete(Integer.parseInt(request.getParameter("txtIdLibroER")), getParameters(request)), response);
                     break;
                 default:
-                    request.getRequestDispatcher("/jsp_app/mantenimiento/autor.jsp").forward(request, response);
+                    request.getRequestDispatcher("/jsp_app/mantenimiento/libro.jsp").forward(request, response);
                     break;
-                    
             }
         } catch (SQLException ex) {
-            
-            Logger.getLogger(AutorAPI.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LibroAPI.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -127,41 +124,40 @@ public class AutorAPI extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-    private Autor getAutor(HttpServletRequest request) {
-        Autor autor = new Autor();
-        if (request.getParameter("accion").equals("updateAutor")) {
-            autor.setIdautor(Integer.parseInt(request.getParameter("txtIdAutorER")));
+    private Libro getLibro(HttpServletRequest request) {
+       Libro libro = new Libro();
+        try {
+            if (request.getParameter("accion").equals("updateLibro")) {
+                libro.setIdlibro(Integer.parseInt(request.getParameter("txtIdLibroER")));
+            }
+            libro.setNombre(request.getParameter("txtNombreLibroER"));
+            libro.setFechaPublicacion(ParceDate.getDate(request.getParameter("txtFecha-PublicacionLibroER"), "dd/MM/yyyy"));
+            libro.setGenero(request.getParameter("txtGeneroLibroER"));
+            libro.setEdicion(request.getParameter("txtEdicionLibroER"));
+            libro.setAutor(new Autor(Integer.parseInt(request.getParameter("cboAutorLibroER"))));
+        } catch (Exception ex) {
+            Logger.getLogger(LibroAPI.class.getName()).log(Level.SEVERE, null, ex);
         }
-        autor.setNombre(request.getParameter("txtNombreAutorER"));
-        autor.setNombre2(request.getParameter("txtNombre2AutorER"));
-        autor.setDocumento(request.getParameter("txtDocumentoAutorER"));
-        autor.setTelefono(request.getParameter("txtTelefonoAutorER"));
-        autor.setDireccion(request.getParameter("txtDireccionAutorER"));
-        return autor;
+        return libro;
     }
 
-    private void procesarAutor(BEAN_CRUD beancrud, HttpServletResponse response) {
+    private void procesarLibro(BEAN_CRUD beancrud, HttpServletResponse response) {
         try {
             this.json_respose = this.jsonParse.toJson(beancrud);
             LOG.info(this.json_respose);
             response.setContentType("application/json");
             response.getWriter().write(this.json_respose);
         } catch (IOException ex) {
-            Logger.getLogger(AutorAPI.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LibroAPI.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     private HashMap<String, Object> getParameters(HttpServletRequest request) {
         this.parameters.clear();
-        this.parameters.put("FILTER", request.getParameter("txtNombreAutor"));
+        this.parameters.put("FILTER", request.getParameter("txtNombreLibro"));
         this.parameters.put("SQL_ORDER_BY", " NOMBRE ASC ");
-        if(request.getParameter("sizePageAutor").equals("ALL")){
-             this.parameters.put("SQL_LIMIT", "");
-        }else{
-            this.parameters.put("SQL_LIMIT", " LIMIT " + request.getParameter("sizePageAutor") + " offset "
-                + (Integer.parseInt(request.getParameter("numberPageAutor")) - 1) * Integer.parseInt(request.getParameter("sizePageAutor")));
-        }
-        
+        this.parameters.put("SQL_LIMIT", " LIMIT " + request.getParameter("sizePageLibro") + " offset "
+                + (Integer.parseInt(request.getParameter("numberPageLibro")) - 1) * Integer.parseInt(request.getParameter("sizePageLibro")));
         return this.parameters;
 
     }

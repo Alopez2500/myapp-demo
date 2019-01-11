@@ -5,9 +5,10 @@
  */
 package com.alopezc.myapp.demo.impl;
 
-import com.alopezc.myapp.demo.dao.AutorDao;
+import com.alopezc.myapp.demo.dao.ProductoDao;
 import com.alopezc.myapp.demo.dao.SQLCloseable;
-import com.alopezc.myapp.demo.model.Autor;
+import com.alopezc.myapp.demo.model.Categoria;
+import com.alopezc.myapp.demo.model.Producto;
 import com.alopezc.myapp.demo.utilies.BEAN_CRUD;
 import com.alopezc.myapp.demo.utilies.BEAN_PAGINATION;
 import java.sql.Connection;
@@ -24,51 +25,54 @@ import javax.sql.DataSource;
  *
  * @author AlopezCarrillo2500
  */
-public class AutorDaoImpl implements AutorDao {
+public class ProductoDaoImpl implements ProductoDao {
 
-    private static final Logger LOG = Logger.getLogger(AutorDaoImpl.class.getName());
+    private static final Logger LOG = Logger.getLogger(ProductoDaoImpl.class.getName());
 
     private final DataSource pool;
 
-    public AutorDaoImpl(DataSource pool) {
+    public ProductoDaoImpl(DataSource pool) {
         this.pool = pool;
     }
 
     @Override
     public BEAN_PAGINATION getPagination(HashMap<String, Object> parameters, Connection conn) throws SQLException {
         BEAN_PAGINATION beanpagination = new BEAN_PAGINATION();
-        List<Autor> list = new ArrayList<>();
+        List<Producto> list = new ArrayList<>();
         PreparedStatement pst;
         ResultSet rs;
         try {
-            pst = conn.prepareStatement("SELECT COUNT (IDAUTOR) AS COUNT FROM AUTOR WHERE NOMBRE LIKE CONCAT ('%',?,'%') ");
+            pst = conn.prepareStatement("SELECT COUNT(IDPRODUCTO) AS COUNT FROM PRODUCTO WHERE "
+                    + "LOWER(NOMBRE) LIKE CONCAT('%',?,'%')");
             pst.setString(1, String.valueOf(parameters.get("FILTER")));
+            LOG.info(pst.toString());
             rs = pst.executeQuery();
             while (rs.next()) {
+                beanpagination.setCOUNT_FILTER(rs.getInt("COUNT"));
                 if (rs.getInt("COUNT") > 0) {
-                    beanpagination.setCOUNT_FILTER(rs.getInt("COUNT"));
-                    pst = conn.prepareStatement("SELECT * FROM AUTOR WHERE NOMBRE LIKE CONCAT ('%',?,'%')"
-                            + " ORDER BY " + String.valueOf(parameters.get("SQL_ORDER_BY")) + " " + String.valueOf(parameters.get("SQL_LIMIT")));
+                    pst = conn.prepareStatement("SELECT pro.IDPRODUCTO, pro.nombre,pro.precio,pro.stock,pro.stock_min,pro.stock_max,ca.idcategoria,ca.nombre as nombreCategoria FROM PRODUCTO pro inner join CATEGORIA ca on pro.idcategoria = ca.idcategoria WHERE "
+                            + "LOWER(PRO.NOMBRE) LIKE CONCAT('%',?,'%') "
+                            + "ORDER BY " + String.valueOf(parameters.get("SQL_ORDER_BY")) + " " + parameters.get("SQL_LIMIT"));
                     pst.setString(1, String.valueOf(parameters.get("FILTER")));
                     LOG.info(pst.toString());
                     rs = pst.executeQuery();
                     while (rs.next()) {
-                        Autor autor = new Autor();
-                        autor.setIdautor(rs.getInt("IDAUTOR"));
-                        autor.setNombre(rs.getString("NOMBRE"));
-                        autor.setNombre2(rs.getString("NOMBRE2"));
-                        autor.setDocumento(rs.getString("DOCUMENTO"));
-                        autor.setTelefono(rs.getString("TELEFONO"));
-                        autor.setDireccion(rs.getString("DIRECCION"));
-                        list.add(autor);
+                        Producto producto = new Producto();
+                        producto.setIdproducto(rs.getInt("IDPRODUCTO"));
+                        producto.setNombre(rs.getString("NOMBRE"));
+                        producto.setPrecio(rs.getDouble("PRECIO"));
+                        producto.setStock(rs.getInt("STOCK"));
+                        producto.setStock_min(rs.getInt("STOCK_MIN"));
+                        producto.setStock_max(rs.getInt("STOCK_MAX"));
+                        producto.setCategoria(new Categoria(rs.getInt("IDCATEGORIA"),rs.getString("nombreCategoria")));
+                        list.add(producto);
                     }
                 }
-
             }
             beanpagination.setList(list);
             rs.close();
             pst.close();
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw e;
         }
         return beanpagination;
@@ -83,75 +87,75 @@ public class AutorDaoImpl implements AutorDao {
             throw e;
         }
         return beanpagination;
+
     }
 
     @Override
-    public BEAN_CRUD add(Autor obj, HashMap<String, Object> parameters) throws SQLException {
+    public BEAN_CRUD add(Producto obj, HashMap<String, Object> parameters) throws SQLException {
         BEAN_CRUD beancrud = new BEAN_CRUD();
         PreparedStatement pst;
         ResultSet rs;
         try (Connection conn = this.pool.getConnection();
                 SQLCloseable finish = conn::rollback;) {
             conn.setAutoCommit(false);
-            pst = conn.prepareStatement("SELECT COUNT (IDAUTOR) FROM AUTOR WHERE NOMBRE = ? ");
+            pst = conn.prepareStatement("SELECT COUNT (IDPRODUCTO) AS COUNT FROM PRODUCTO WHERE NOMBRE = ? ");
             pst.setString(1, obj.getNombre());
             rs = pst.executeQuery();
             while (rs.next()) {
                 if (rs.getInt("COUNT") == 0) {
-                    pst = conn.prepareCall("INSERT INTO AUTOR (NOMBRE,NOMBRE2,DOCUMENTO,TELEFONO,DIRECCION) VALUES(?,?,?,?,?)");
+                    pst = conn.prepareStatement("INSERT INTO PRODUCTO(NOMBRE,PRECIO,STOCK,STOCK_MIN,STOCK_MAX,IDCATEGORIA) VALUES(?,?,?,?,?,?)");
                     pst.setString(1, obj.getNombre());
-                    pst.setString(2, obj.getNombre2());
-                    pst.setString(3, obj.getDocumento());
-                    pst.setString(4, obj.getTelefono());
-                    pst.setString(5, obj.getDireccion());
-                    LOG.info(pst.toString());
+                    pst.setDouble(2, obj.getPrecio());
+                    pst.setInt(3, obj.getStock());
+                    pst.setInt(4, obj.getStock_min());
+                    pst.setInt(5, obj.getStock_max());
+                    pst.setInt(6, obj.getCategoria().getIdcategoria());
                     pst.executeUpdate();
                     conn.commit();
                     beancrud.setMENSSAGE_SERVER("ok");
                     beancrud.setBEAN_PAGINATION(getPagination(parameters, conn));
-
                 } else {
-                    beancrud.setMENSSAGE_SERVER("No se registro, ya existe una Cliente con el nombre ingresado");
+                    beancrud.setMENSSAGE_SERVER("No se registró, ya existe un Producto con el nombre ingresado");
                 }
             }
             pst.close();
             rs.close();
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw e;
         }
         return beancrud;
     }
 
     @Override
-    public BEAN_CRUD update(Autor obj, HashMap<String, Object> parameters) throws SQLException {
+    public BEAN_CRUD update(Producto obj, HashMap<String, Object> parameters) throws SQLException {
         BEAN_CRUD beancrud = new BEAN_CRUD();
         PreparedStatement pst;
         ResultSet rs;
         try (Connection conn = this.pool.getConnection();
                 SQLCloseable finish = conn::rollback;) {
             conn.setAutoCommit(false);
-            pst = conn.prepareStatement("SELECT COUNT (IDAUTOR) FROM AUTOR WHERE NOMBRE = ? AND IDAUTOR= ?");
+            pst = conn.prepareStatement("SELECT COUNT(IDPRODUCTO) AS COUNT FROM PRODUCTO WHERE NOMBRE = ? AND IDPRODUCTO != ?");
             pst.setString(1, obj.getNombre());
-            pst.setInt(2, obj.getIdautor());
-            LOG.info(pst.toString());
+            pst.setInt(2, obj.getIdproducto());
             rs = pst.executeQuery();
             while (rs.next()) {
                 if (rs.getInt("COUNT") == 0) {
-                    pst = conn.prepareCall("UPDATE AUTOR SET NOMBRE = ?, NOMBRE2 = ? , DOCUMENTO = ? , TELEFONO = ? , DIRECCION = ?  WHERE IDAUTOR=?");
+                    pst = conn.prepareStatement("UPDATE PRODUCTO SET NOMBRE = ?, PRECIO = ?, STOCK = ?, STOCK_MIN = ?, "
+                            + "STOCK_MAX = ?, IDCATEGORIA = ? WHERE IDPRODUCTO = ?");
                     pst.setString(1, obj.getNombre());
-                    pst.setString(2, obj.getNombre2());
-                    pst.setString(3, obj.getDocumento());
-                    pst.setString(4, obj.getTelefono());
-                    pst.setString(5, obj.getDireccion());
-                    pst.setInt(6, obj.getIdautor());
+                    pst.setDouble(2, obj.getPrecio());
+                    pst.setInt(3, obj.getStock());
+                    pst.setInt(4, obj.getStock_min());
+                    pst.setInt(5, obj.getStock_max());
+                    pst.setInt(6, obj.getCategoria().getIdcategoria());
+                    pst.setInt(7, obj.getIdproducto());
                     LOG.info(pst.toString());
                     pst.executeUpdate();
                     conn.commit();
                     beancrud.setMENSSAGE_SERVER("ok");
                     beancrud.setBEAN_PAGINATION(getPagination(parameters, conn));
-
                 } else {
-                    beancrud.setMENSSAGE_SERVER("No se modifico, ya existe una Cliente con el nombre ingresado");
+                    beancrud.setMENSSAGE_SERVER("No se modificó, ya existe un Producto con el nombre ingresado");
                 }
             }
             pst.close();
@@ -168,9 +172,8 @@ public class AutorDaoImpl implements AutorDao {
         try (Connection conn = this.pool.getConnection();
                 SQLCloseable finish = conn::rollback;) {
             conn.setAutoCommit(false);
-            try (PreparedStatement pst = conn.prepareStatement("delete from autor where idautor = ? ")) {
+            try (PreparedStatement pst = conn.prepareStatement("delete from producto where idproducto = ? ")) {
                 pst.setInt(1, id);
-                LOG.info(pst.toString());
                 pst.executeUpdate();
                 conn.commit();
                 beancrud.setMENSSAGE_SERVER("ok");

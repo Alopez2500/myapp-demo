@@ -57,14 +57,14 @@
                     <div class="menu-inner">
                         <nav>
                             <ul class="metismenu" id="menu">
-                                <li class="active"><a href=""><i class="fa fa-home"></i> <span>Inicio</span></a></li>
+                                <li class="active"><a href="index.jsp"><i class="fa fa-home"></i> <span>Inicio</span></a></li>
                                 <li>
                                     <a href="javascript:void(0)"><i class="fa fa-tag"></i><span>Mantenimientos</span></a>
                                     <ul class="collapse">
-                                        <li ><a class="item" href="categoria"><i class="fa fa-cubes"></i>Categorias</a></li>
-                                        <li ><a class="item" href="autor"><i class="fa fa-archive"></i> Autor</a></li>
+                                        <li><a class="item" href="categoria"><i class="fa fa-cubes"></i>Categoria</a></li>
+                                        <li><a class="item" href="autor"><i class="fa fa-archive"></i> Autor</a></li>
                                         <li><a class="item" href="producto"><i class="fa fa-archive"></i> Producto</a></li>
-                                        <li><a class="item" href="producto"><i class="fa fa-archive"></i> Libro</a></li>
+                                        <li><a class="item" href="libro"><i class="fa fa-archive"></i> Libro</a></li>
 
                                     </ul>
                                 </li>
@@ -106,18 +106,18 @@
                         <div class="col-12" style="padding:30px">
                             <div class="card">
                                 <div class="card-body">
-                                    <h6 id="nameCrudCategoria"> CATEGORIAS</h6>
-                                    <input type="hidden" id="nameFormCategoria" value="FrmCategoria">
-                                    <input type="hidden" id="accionCategoria" name="accion" value="paginarCategoria">
-                                    <input type="hidden" id="numberPageCategoria" name="numberPageCategoria" value="1">
-                                    <form id="FrmCategoria">
+                                    <h6 id="nameCrudProducto"> Producto </h6>
+                                    <input type="hidden" id="nameFormProducto" value="FrmProducto">
+                                    <input type="hidden" id="accionProducto" name="accion" value="paginarProducto">
+                                    <input type="hidden" id="numberPageProducto" name="numberPageProducto" value="1">
+                                    <form id="FrmProducto">
                                         <div class="row mt-3">
                                             <div class="form-group col-sm-9 col-12"> 
-                                                <input type="text" id="txtNombreCategoria" name="txtNombreCategoria" class="form-control form-control-sm" placeholder="Nombre">
+                                                <input type="text" id="txtNombreProducto" name="txtNombreProducto" class="form-control form-control-sm" placeholder="Nombre">
                                             </div>
                                             <div class="col-sm-3 col-12"> 
-                                                <button type="submit" id="btnBuscarCategoria" class="btn btn-primary btn-xs mr-3"> <i class="fa fa-search" aria-hidden="true"></i> BUSCAR</button>
-                                                <button type="button" id="btnAbrirNCategoria" class="btn btn-primary btn-xs"> <i class="fa fa-plus-square" aria-hidden="true"></i></button>
+                                                <button type="submit" id="btnBuscarProducto" class="btn btn-primary btn-xs mr-3"> <i class="fa fa-search" aria-hidden="true"></i> BUSCAR</button>
+                                                <button type="button" id="btnAbrirNProducto" class="btn btn-primary btn-xs"> <i class="fa fa-plus-square" aria-hidden="true"></i></button>
                                             </div>
                                         </div>
                                     </form>
@@ -128,10 +128,15 @@
                                                     <thead class="bg-primary">
                                                         <tr class="text-white">
                                                             <th>NOMBRES</th>
+                                                            <th>PRECIO</th>
+                                                            <th>STOCK</th>
+                                                            <th>STOCK MÍNIMO</th>
+                                                            <th>STOCK MAXIMO</th>
+                                                            <th>CATEGORIA</th>
                                                             <th style="width: 15%" colspan="2">ACCIONES</th>
                                                         </tr>
                                                     </thead>
-                                                    <tbody id="tbodyCategoria">
+                                                    <tbody id="tbodyProducto">
 
                                                     </tbody>
                                                 </table>
@@ -140,7 +145,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-md-2 col-12">
-                                            <select class="form-control form-control-sm combo-paginar" id="sizePageCategoria" name="sizePageCategoria" idBtnBuscar="btnBuscarCategoria">
+                                            <select class="form-control form-control-sm combo-paginar" id="sizePageProducto" name="sizePageProducto" idBtnBuscar="btnBuscarProducto">
                                                 <option value="10">10</option>  
                                                 <option value="15">15</option>  
                                                 <option value="20">20</option>  
@@ -148,7 +153,7 @@
                                         </div>
                                         <div class="col-md-9 col-12">
                                             <nav >
-                                                <ul id="paginationCategoria" class="pagination pagination-sm justify-content-end">
+                                                <ul id="paginationProducto" class="pagination pagination-sm justify-content-end">
 
                                                 </ul>
                                             </nav>
@@ -161,12 +166,12 @@
 
                 </div>
             </div>
-            <div id="ventanaModalManCategoria" class="modal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
+            <div id="ventanaModalManProducto" class="modal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
-                        <form id="FrmCategoriaModal">
+                        <form id="FrmProductoModal">
                             <div class="modal-header">
-                                <h6 class="modal-title" id="tituloModalManCategoria"></h6>
+                                <h6 class="modal-title" id="tituloModalManProducto"></h6>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
@@ -174,12 +179,38 @@
                             <div class="modal-body">
                                 <div class="col-12">
                                     <div class="form-group">
-                                        <label for="txtNombreCategoriaER">NOMBRE</label>
-                                        <input type="text" id="txtNombreCategoriaER" name="txtNombreCategoriaER" class="form-control form-control-sm" placeholder="NOMBRE">
-                                        <div class="error-validation" id="validarNombreCategoriaER">Ingrese Categoria</div>
+                                        <label for="txtNombreProductoER">NOMBRE</label>
+                                        <input type="text" id="txtNombreProductoER" name="txtNombreProductoER" class="form-control form-control-sm" placeholder="NOMBRE">
+                                        <div class="error-validation" id="validarNombreProductoER">Ingrese Nombre</div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="txtPrecioProductoER">PRECIO</label>
+                                        <input type="text" id="txtPrecioProductoER" name="txtPrecioProductoER" class="form-control form-control-sm" placeholder="PRECIO">
+                                        <div class="error-validation" id="validarPrecioProductoER">Ingrese Precio</div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="txtStockProductoER">STOCK</label>
+                                        <input type="text" id="txtStockProductoER" name="txtStockProductoER" class="form-control form-control-sm" placeholder="STOCK">
+                                        <div class="error-validation" id="validarStockProductoER">Ingrese Stock</div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="txtStock_minProductoER">STOCK MÍNIMO</label>
+                                        <input type="text" id="txtStock_minProductoER" name="txtStock_minProductoER" class="form-control form-control-sm" placeholder="STOCK MÍNIMO">
+                                        <div class="error-validation" id="validarStock_minProductoER">Ingrese valor</div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="txtStock_maxProductoER">STOCK MÁXIMO</label>
+                                        <input type="text" id="txtStock_maxProductoER" name="txtStock_maxProductoER" class="form-control form-control-sm" placeholder="STOCK MÁXIMO">
+                                        <div class="error-validation" id="validarStock_maxProductoER">Ingrese valor</div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="cboCategoriaProductoER">CATEGORIA</label>
+                                        <select class="form-control form-control-sm" id="cboCategoriaProductoER" name="cboCategoriaProductoER">
+                                        </select>
+                                         <div class="error-validation" id="validarCategoriaProductoER">Seleccione Categoria</div>
                                     </div>
                                 </div>
-                                <input type="hidden" id="txtIdCategoriaER" name="txtIdCategoriaER" value="">
+                                <input type="hidden" id="txtIdProductoER" name="txtIdProductoER" value="">
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary btn-xs" data-dismiss="modal">CERRAR</button>
@@ -189,7 +220,7 @@
                     </div>
                 </div>
             </div>
-            <div class="modal" id="modalCargandoCategoria" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true" style="padding-top: 18%; overflow-y: visible;">
+            <div class="modal" id="modalCargandoProducto" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true" style="padding-top: 18%; overflow-y: visible;">
                 <div class="modal-dialog modal-sm">
                     <div class="modal-content">
                         <div class="modal-body">
@@ -244,7 +275,7 @@
     <script src="<%out.print(getServletContext().getContextPath());%>/js_app/view/jquery.Pagination.min.js"></script>
     <script src="<%out.print(getServletContext().getContextPath());%>/js_app/view/sweetalert.min.js"></script>
     <script src="<%out.print(getServletContext().getContextPath());%>/js_app/app/utilies/lib_utilies.js"></script>
-    <script src="<%out.print(getServletContext().getContextPath());%>/js_app/app/categoria.js"></script>
+    <script src="<%out.print(getServletContext().getContextPath());%>/js_app/app/producto.js"></script>
 </body>
 
 </html>
