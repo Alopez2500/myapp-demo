@@ -25,16 +25,16 @@ import javax.sql.DataSource;
  *
  * @author AlopezCarrillo2500
  */
-public class LibroDaoImpl implements LibroDao{
+public class LibroDaoImpl implements LibroDao {
 
     private static final Logger LOG = Logger.getLogger(LibroDaoImpl.class.getName());
 
     private final DataSource pool;
-    
-    public LibroDaoImpl(DataSource pool){
-        this.pool= pool;
+
+    public LibroDaoImpl(DataSource pool) {
+        this.pool = pool;
     }
-    
+
     @Override
     public BEAN_PAGINATION getPagination(HashMap<String, Object> parameters, Connection conn) throws SQLException {
         BEAN_PAGINATION beanpagination = new BEAN_PAGINATION();
@@ -83,7 +83,7 @@ public class LibroDaoImpl implements LibroDao{
 
     @Override
     public BEAN_PAGINATION getPagination(HashMap<String, Object> parameters) throws SQLException {
-          BEAN_PAGINATION beanpagination = null;
+        BEAN_PAGINATION beanpagination = null;
         try (Connection conn = this.pool.getConnection()) {
             beanpagination = getPagination(parameters, conn);
         } catch (SQLException e) {
@@ -129,7 +129,7 @@ public class LibroDaoImpl implements LibroDao{
 
     @Override
     public BEAN_CRUD update(Libro obj, HashMap<String, Object> parameters) throws SQLException {
-                BEAN_CRUD beancrud = new BEAN_CRUD();
+        BEAN_CRUD beancrud = new BEAN_CRUD();
         PreparedStatement pst;
         ResultSet rs;
         try (Connection conn = this.pool.getConnection();
@@ -168,7 +168,7 @@ public class LibroDaoImpl implements LibroDao{
 
     @Override
     public BEAN_CRUD delete(Integer id, HashMap<String, Object> parameters) throws SQLException {
-         BEAN_CRUD beancrud = new BEAN_CRUD();
+        BEAN_CRUD beancrud = new BEAN_CRUD();
         try (Connection conn = this.pool.getConnection();
                 SQLCloseable finish = conn::rollback;) {
             conn.setAutoCommit(false);
@@ -184,5 +184,5 @@ public class LibroDaoImpl implements LibroDao{
         }
         return beancrud;
     }
-    
+
 }

@@ -123,7 +123,7 @@ public class ProductoDaoImpl implements ProductoDao {
         } catch (Exception e) {
             throw e;
         }
-        return beancrud;
+        return beancrud; 
     }
 
     @Override
