@@ -86,7 +86,7 @@ function listarProducto(BEAN_PAGINATION) {
     var $pagination = $('#paginationProducto');
     $('#tbodyProducto').empty();
     $pagination.twbsPagination('destroy');
-    $('#nameCrudProducto').html("[ " + BEAN_PAGINATION.COUNT_FILTER + " ] Producto");
+    $('#nameCrudProducto').html("[ " + BEAN_PAGINATION.COUNT_FILTER + " ] PRODUCTOS");
     if (BEAN_PAGINATION.COUNT_FILTER > 0) {
         var fila;
         var atributos;

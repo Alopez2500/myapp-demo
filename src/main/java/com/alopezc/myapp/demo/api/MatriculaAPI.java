@@ -5,14 +5,12 @@
  */
 package com.alopezc.myapp.demo.api;
 
-import com.alopezc.myapp.demo.dao.LibroDao;
-import com.alopezc.myapp.demo.impl.LibroDaoImpl;
-import com.alopezc.myapp.demo.model.Autor;
-import com.alopezc.myapp.demo.model.Libro;
+import com.alopezc.myapp.demo.dao.MatriculaDao;
+import com.alopezc.myapp.demo.impl.MatriculaDaoImpl;
+import com.alopezc.myapp.demo.model.Alumno;
+import com.alopezc.myapp.demo.model.Matricula;
 import com.alopezc.myapp.demo.utilies.BEAN_CRUD;
-import com.alopezc.myapp.demo.utilies.ParceDate;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -30,26 +28,27 @@ import javax.sql.DataSource;
  *
  * @author AlopezCarrillo2500
  */
-@WebServlet(name = "LibroAPI", urlPatterns = {"/libro"})
-public class LibroAPI extends HttpServlet {
+@WebServlet(name = "MatriculaAPI", urlPatterns = {"/matricula"})
+public class MatriculaAPI extends HttpServlet {
 
-    private static final Logger LOG = Logger.getLogger(LibroAPI.class.getName());
+    private static final Logger LOG = Logger.getLogger(MatriculaAPI.class.getName());
 
-    @Resource(name = "jdbc/dbmyapp")
+         @Resource(name = "jdbc/dbmyapp")
     private DataSource pool;
     private Gson jsonParse;
     private HashMap<String, Object> parameters;
     private String json_respose;
     private String accion;
-    private LibroDao libroDao;
+    private MatriculaDao matriculaDao;
 
     @Override
     public void init() throws ServletException {
-        this.jsonParse = new GsonBuilder().setDateFormat("dd/MM/yyyy").create();
+         this.jsonParse = new Gson();
         this.parameters = new HashMap<>();
-        this.libroDao = new LibroDaoImpl(pool); 
+        this.matriculaDao = new MatriculaDaoImpl(pool); 
     }
-
+    
+    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -61,27 +60,27 @@ public class LibroAPI extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
+                try {
             this.accion = request.getParameter("accion") == null ? "" : request.getParameter("accion");
             switch (this.accion) {
-                case "paginarLibro":
-                    procesarLibro(new BEAN_CRUD(this.libroDao.getPagination(getParameters(request))), response);
+                case "paginarMatricula":
+                    procesarMatricula(new BEAN_CRUD(this.matriculaDao.getPagination(getParameters(request))), response);
                     break;
-                case "addLibro":
-                    procesarLibro(this.libroDao.add(getLibro(request), getParameters(request)), response);
+                case "addMatricula":
+                    procesarMatricula(this.matriculaDao.add(getMatricula(request), getParameters(request)), response);
                     break;
-                case "updateLibro":
-                    procesarLibro(this.libroDao.update(getLibro(request), getParameters(request)), response);
+                case "updateMatricula":
+                    procesarMatricula(this.matriculaDao.update(getMatricula(request), getParameters(request)), response);
                     break;
-                case "deleteLibro":
-                    procesarLibro(this.libroDao.delete(Integer.parseInt(request.getParameter("txtIdLibroER")), getParameters(request)), response);
+                case "deleteMatricula":
+                    procesarMatricula(this.matriculaDao.delete(Integer.parseInt(request.getParameter("txtIdMatriculaER")), getParameters(request)), response);
                     break;
                 default:
-                    request.getRequestDispatcher("/jsp_app/mantenimiento/libro.jsp").forward(request, response);
+                    request.getRequestDispatcher("/jsp_app/mantenimiento/matricula.jsp").forward(request, response);
                     break;
             }
         } catch (SQLException ex) {
-            Logger.getLogger(LibroAPI.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(MatriculaAPI.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -123,42 +122,40 @@ public class LibroAPI extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
-    private Libro getLibro(HttpServletRequest request) {
-       Libro libro = new Libro();
-        try {
-            if (request.getParameter("accion").equals("updateLibro")) {
-                libro.setIdlibro(Integer.parseInt(request.getParameter("txtIdLibroER")));
-            }
-            libro.setNombre(request.getParameter("txtNombreLibroER"));
-            libro.setFechaPublicacion(ParceDate.getDate(request.getParameter("txtFecha-PublicacionLibroER"), "dd/MM/yyyy"));
-            libro.setGenero(request.getParameter("txtGeneroLibroER"));
-            libro.setEdicion(request.getParameter("txtEdicionLibroER"));
-            libro.setAutor(new Autor(Integer.parseInt(request.getParameter("cboAutorLibroER"))));
-        } catch (Exception ex) {
-            Logger.getLogger(LibroAPI.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return libro;
-    }
-
-    private void procesarLibro(BEAN_CRUD beancrud, HttpServletResponse response) {
+   private void procesarMatricula(BEAN_CRUD beancrud, HttpServletResponse response) {
         try {
             this.json_respose = this.jsonParse.toJson(beancrud);
             LOG.info(this.json_respose);
             response.setContentType("application/json");
             response.getWriter().write(this.json_respose);
         } catch (IOException ex) {
-            Logger.getLogger(LibroAPI.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(MatriculaAPI.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     private HashMap<String, Object> getParameters(HttpServletRequest request) {
         this.parameters.clear();
-        this.parameters.put("FILTER", request.getParameter("txtNombreLibro"));
-        this.parameters.put("SQL_ORDER_BY", " NOMBRE ASC ");
-        this.parameters.put("SQL_LIMIT", " LIMIT " + request.getParameter("sizePageLibro") + " offset "
-                + (Integer.parseInt(request.getParameter("numberPageLibro")) - 1) * Integer.parseInt(request.getParameter("sizePageLibro")));
+        this.parameters.put("FILTER", request.getParameter("txtCodigoMatricula"));
+        this.parameters.put("SQL_ORDER_BY", "NOMBRE ASC");
+        if (request.getParameter("sizePageMatricula").equals("ALL")) {
+            this.parameters.put("SQL_LIMIT", "");
+        } else {
+            this.parameters.put("SQL_LIMIT", " LIMIT " + request.getParameter("sizePageMatricula") + " offset "
+                    + (Integer.parseInt(request.getParameter("numberPageMatricula")) - 1) * Integer.parseInt(request.getParameter("sizePageMatricula")));
+        }
+
         return this.parameters;
 
+    }
+
+    private Matricula getMatricula(HttpServletRequest request) {
+        Matricula matricula = new Matricula();
+        if (request.getParameter("accion").equals("updateMatricula")) {
+            matricula.setIdmatricula(Integer.parseInt(request.getParameter("txtIdMatriculaER")));
+        }
+        matricula.setCodigo(request.getParameter("txtCodigoMatriculaER"));
+        matricula.setCiclo(request.getParameter("txtCicloMatriculaER"));
+        matricula.setAlumno( new Alumno(Integer.parseInt(request.getParameter("cboAlumnoMatriculaER"))));
+        return matricula;
     }
 }

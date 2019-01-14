@@ -109,18 +109,18 @@
                         <div class="col-12" style="padding:30px">
                             <div class="card">
                                 <div class="card-body">
-                                    <h6 id="nameCrudLibro"> Libro </h6>
-                                    <input type="hidden" id="nameFormLibro" value="FrmLibro">
-                                    <input type="hidden" id="accionLibro" name="accion" value="paginarLibro">
-                                    <input type="hidden" id="numberPageLibro" name="numberPageLibro" value="1">
-                                    <form id="FrmLibro">
+                                    <h6 id="nameCrudMatricula"> Matricula </h6>
+                                    <input type="hidden" id="nameFormMatricula" value="FrmMatricula">
+                                    <input type="hidden" id="accionMatricula" name="accion" value="paginarMatricula">
+                                    <input type="hidden" id="numberPageMatricula" name="numberPageMatricula" value="1">
+                                    <form id="FrmMatricula">
                                         <div class="row mt-3">
                                             <div class="form-group col-sm-9 col-12"> 
-                                                <input type="text" id="txtNombreLibro" name="txtNombreLibro" class="form-control form-control-sm" placeholder="Nombre">
+                                                <input type="text" id="txtCodigoMatricula" name="txtCodigoMatricula" class="form-control form-control-sm" placeholder="Codigo">
                                             </div>
                                             <div class="col-sm-3 col-12"> 
-                                                <button type="submit" id="btnBuscarLibro" class="btn btn-primary btn-xs mr-3"> <i class="fa fa-search" aria-hidden="true"></i> BUSCAR</button>
-                                                <button type="button" id="btnAbrirNLibro" class="btn btn-primary btn-xs"> <i class="fa fa-plus-square" aria-hidden="true"></i></button>
+                                                <button type="submit" id="btnBuscarMatricula" class="btn btn-primary btn-xs mr-3"> <i class="fa fa-search" aria-hidden="true"></i> BUSCAR</button>
+                                                <button type="button" id="btnAbrirNMatricula" class="btn btn-primary btn-xs"> <i class="fa fa-plus-square" aria-hidden="true"></i></button>
                                             </div>
                                         </div>
                                     </form>
@@ -130,15 +130,15 @@
                                                 <table class="table table-hover table-bordered">
                                                     <thead class="bg-primary">
                                                         <tr class="text-white">
-                                                            <th>NOMBRES</th>
-                                                            <th>FECHA PUBLICACION</th>
-                                                            <th>GENERO</th>
-                                                            <th>EDICION</th>
-                                                            <th>AUTOR</th>
+                                                            <th>CODIGO</th>
+                                                            <th>CICLO</th>
+                                                            <th>ALUMNO</th>
+                                                            <th>TELEFONO</th>
+                                                            <th>DIRECCION</th>
                                                             <th style="width: 15%" colspan="2">ACCIONES</th>
                                                         </tr>
                                                     </thead>
-                                                    <tbody id="tbodyLibro">
+                                                    <tbody id="tbodyMatricula">
 
                                                     </tbody>
                                                 </table>
@@ -147,7 +147,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-md-2 col-12">
-                                            <select class="form-control form-control-sm combo-paginar" id="sizePageLibro" name="sizePageLibro" idBtnBuscar="btnBuscarLibro">
+                                            <select class="form-control form-control-sm combo-paginar" id="sizePageMatricula" name="sizePageMatricula" idBtnBuscar="btnBuscarMatricula">
                                                 <option value="10">10</option>  
                                                 <option value="15">15</option>  
                                                 <option value="20">20</option>  
@@ -155,7 +155,7 @@
                                         </div>
                                         <div class="col-md-9 col-12">
                                             <nav >
-                                                <ul id="paginationLibro" class="pagination pagination-sm justify-content-end">
+                                                <ul id="paginationMatricula" class="pagination pagination-sm justify-content-end">
 
                                                 </ul>
                                             </nav>
@@ -168,12 +168,12 @@
 
                 </div>
             </div>
-            <div id="ventanaModalManLibro" class="modal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
+            <div id="ventanaModalManMatricula" class="modal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
-                        <form id="FrmLibroModal">
+                        <form id="FrmMatriculaModal">
                             <div class="modal-header">
-                                <h6 class="modal-title" id="tituloModalManLibro"></h6>
+                                <h6 class="modal-title" id="tituloModalManMatricula"></h6>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
@@ -181,33 +181,23 @@
                             <div class="modal-body">
                                 <div class="col-12">
                                     <div class="form-group">
-                                        <label for="txtNombreLibroER">NOMBRE</label>
-                                        <input type="text" id="txtNombreLibroER" name="txtNombreLibroER" class="form-control form-control-sm" placeholder="NOMBRE">
-                                        <div class="error-validation" id="validarNombreLibroER">Ingrese Nombre</div>
+                                        <label for="txtCodigoMatriculaER">CODIGO</label>
+                                        <input type="text" id="txtCodigoMatriculaER" name="txtCodigoMatriculaER" class="form-control form-control-sm" placeholder="CODIGO">
+                                        <div class="error-validation" id="validarCodigoMatriculaER">Ingrese Codigo</div>
                                     </div>
                                     <div class="form-group">
-                                        <label for="txtFecha-PublicacionLibroER">FECHA DE PUBLICACION</label>
-                                        <input type="text" id="txtFecha-PublicacionLibroER" name="txtFecha-PublicacionLibroER" class="form-control form-control-sm" placeholder="FECHA DE PUBLICACION">
-                                        <div class="error-validation" id="validarFecha-PublicacionLibroER">Ingrese fecha de Publicacion</div>
+                                        <label for="txtCicloMatriculaER">CICLO</label>
+                                        <input type="text" id="txtCicloMatriculaER" name="txtCicloMatriculaER" class="form-control form-control-sm" placeholder="CICLO">
+                                        <div class="error-validation" id="validarCicloMatriculaER">Ingrese Ciclo</div>
                                     </div>
                                     <div class="form-group">
-                                        <label for="txtGeneroLibroER">GENERO</label>
-                                        <input type="text" id="txtGeneroLibroER" name="txtGeneroLibroER" class="form-control form-control-sm" placeholder="GENERO">
-                                        <div class="error-validation" id="validarGeneroLibroER">Ingrese Genero</div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="txtEdicionLibroER">EDICION</label>
-                                        <input type="text" id="txtEdicionLibroER" name="txtEdicionLibroER" class="form-control form-control-sm" placeholder="EDICION">
-                                        <div class="error-validation" id="validarEdicionLibroER">Ingrese Edicion</div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="cboAutorLibroER">AUTORES</label>
-                                        <select class="form-control form-control-sm" id="cboAutorLibroER" name="cboAutorLibroER">
+                                        <label for="cboAlumnoMatriculaER">ALUMNO</label>
+                                        <select class="form-control form-control-sm" id="cboAlumnoMatriculaER" name="cboAlumnoMatriculaER">
                                         </select>
-                                        <div class="error-validation" id="validarAutorLibroER">Seleccione Autor</div>
+                                        <div class="error-validation" id="validarcboAlumnoMatriculaER">Seleccione Alumno</div>
                                     </div>
                                 </div>
-                                <input type="hidden" id="txtIdLibroER" name="txtIdLibroER" value="">
+                                <input type="hidden" id="txtIdMatriculaER" name="txtIdMatriculaER" value="">
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary btn-xs" data-dismiss="modal">CERRAR</button>
@@ -217,7 +207,7 @@
                     </div>
                 </div>
             </div>
-            <div class="modal" id="modalCargandoLibro" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true" style="padding-top: 18%; overflow-y: visible;">
+            <div class="modal" id="modalCargandoMatricula" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true" style="padding-top: 18%; overflow-y: visible;">
                 <div class="modal-dialog modal-sm">
                     <div class="modal-content">
                         <div class="modal-body">
@@ -272,7 +262,7 @@
     <script src="<%out.print(getServletContext().getContextPath());%>/js_app/view/jquery.Pagination.min.js"></script>
     <script src="<%out.print(getServletContext().getContextPath());%>/js_app/view/sweetalert.min.js"></script>
     <script src="<%out.print(getServletContext().getContextPath());%>/js_app/app/utilies/lib_utilies.js"></script>
-    <script src="<%out.print(getServletContext().getContextPath());%>/js_app/app/libro.js"></script>
+    <script src="<%out.print(getServletContext().getContextPath());%>/js_app/app/matricula.js"></script>
 </body>
 
 </html>

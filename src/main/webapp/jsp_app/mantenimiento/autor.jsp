@@ -61,10 +61,13 @@
                                 <li>
                                     <a href="javascript:void(0)"><i class="fa fa-tag"></i><span>Mantenimientos</span></a>
                                     <ul class="collapse">
-                                        <li><a class="item" href="categoria"><i class="fa fa-cubes"></i>Categoria</a></li>
-                                        <li><a class="item" href="autor"><i class="fa fa-archive"></i> Autor</a></li>
-                                        <li><a class="item" href="producto"><i class="fa fa-archive"></i> Producto</a></li>
-                                        <li><a class="item" href="producto"><i class="fa fa-archive"></i> Libro</a></li>
+                                        <li ><a class="item" href="alumno"><i class="fa fa-cubes"></i>Categorias</a></li>
+                                        <li ><a class="item" href="autor"><i class="fa fa-archive"></i> Autores</a></li>
+                                        <li><a class="item" href="producto"><i class="fa fa-archive"></i> Productos</a></li>
+                                        <li><a class="item" href="libro"><i class="fa fa-archive"></i> Libros</a></li>
+                                        <li><a class="item" href="alumno"><i class="fa fa-archive"></i> Alumnos</a></li>
+                                        <li><a class="item" href="curso"><i class="fa fa-archive"></i> Cursos</a></li>
+                                        <li><a class="item" href="matricula"><i class="fa fa-archive"></i> Matricula</a></li>
 
                                     </ul>
                                 </li>

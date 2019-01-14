@@ -5,14 +5,12 @@
  */
 package com.alopezc.myapp.demo.api;
 
-import com.alopezc.myapp.demo.dao.LibroDao;
-import com.alopezc.myapp.demo.impl.LibroDaoImpl;
-import com.alopezc.myapp.demo.model.Autor;
-import com.alopezc.myapp.demo.model.Libro;
+import com.alopezc.myapp.demo.dao.CursoDao;
+import com.alopezc.myapp.demo.impl.CursoDaoImpl;
+import com.alopezc.myapp.demo.model.Curso;
 import com.alopezc.myapp.demo.utilies.BEAN_CRUD;
-import com.alopezc.myapp.demo.utilies.ParceDate;
+import com.alopezc.myapp.demo.utilies.BEAN_PAGINATION;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -30,24 +28,24 @@ import javax.sql.DataSource;
  *
  * @author AlopezCarrillo2500
  */
-@WebServlet(name = "LibroAPI", urlPatterns = {"/libro"})
-public class LibroAPI extends HttpServlet {
+@WebServlet(name = "Curso", urlPatterns = {"/curso"})
+public class CursoAPI extends HttpServlet {
 
-    private static final Logger LOG = Logger.getLogger(LibroAPI.class.getName());
-
+    private static final Logger LOG = Logger.getLogger(CursoAPI.class.getName());
+    
     @Resource(name = "jdbc/dbmyapp")
     private DataSource pool;
     private Gson jsonParse;
     private HashMap<String, Object> parameters;
     private String json_respose;
     private String accion;
-    private LibroDao libroDao;
-
+    private CursoDao cursoDao;
+    
     @Override
     public void init() throws ServletException {
-        this.jsonParse = new GsonBuilder().setDateFormat("dd/MM/yyyy").create();
+        this.jsonParse = new Gson();
         this.parameters = new HashMap<>();
-        this.libroDao = new LibroDaoImpl(pool); 
+        this.cursoDao = new CursoDaoImpl(pool);
     }
 
     /**
@@ -61,27 +59,32 @@ public class LibroAPI extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
+        response.setContentType("text/html;charset=UTF-8");
+            try {
             this.accion = request.getParameter("accion") == null ? "" : request.getParameter("accion");
+            LOG.info(accion);
             switch (this.accion) {
-                case "paginarLibro":
-                    procesarLibro(new BEAN_CRUD(this.libroDao.getPagination(getParameters(request))), response);
+                case "paginarCurso":
+                    BEAN_PAGINATION beanpagination = this.cursoDao.getPagination(getParameters(request));
+                    BEAN_CRUD beancrud = new BEAN_CRUD(beanpagination);
+                    procesarCurso(beancrud, response);
                     break;
-                case "addLibro":
-                    procesarLibro(this.libroDao.add(getLibro(request), getParameters(request)), response);
+                case "addCurso":
+                    procesarCurso(this.cursoDao.add(getCurso(request), getParameters(request)), response);
                     break;
-                case "updateLibro":
-                    procesarLibro(this.libroDao.update(getLibro(request), getParameters(request)), response);
+                case "updateCurso":
+                    procesarCurso(this.cursoDao.update(getCurso(request), getParameters(request)), response);
                     break;
-                case "deleteLibro":
-                    procesarLibro(this.libroDao.delete(Integer.parseInt(request.getParameter("txtIdLibroER")), getParameters(request)), response);
+                case "deleteCurso":
+                    procesarCurso(this.cursoDao.delete(Integer.parseInt(request.getParameter("txtIdCursoER")), getParameters(request)), response);
                     break;
                 default:
-                    request.getRequestDispatcher("/jsp_app/mantenimiento/libro.jsp").forward(request, response);
+                    request.getRequestDispatcher("/jsp_app/mantenimiento/curso.jsp").forward(request, response);
                     break;
+
             }
         } catch (SQLException ex) {
-            Logger.getLogger(LibroAPI.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CursoAPI.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -113,7 +116,49 @@ public class LibroAPI extends HttpServlet {
             throws ServletException, IOException {
         processRequest(request, response);
     }
+    
+     private void procesarCurso(BEAN_CRUD beancrud, HttpServletResponse response) {
+        try {
+            this.json_respose = this.jsonParse.toJson(beancrud);
+            LOG.info(this.json_respose);
+            response.setContentType("application/json");
+            response.getWriter().write(this.json_respose);
+        } catch (IOException ex) {
+            Logger.getLogger(CursoAPI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
+    private HashMap<String, Object> getParameters(HttpServletRequest request) {
+        this.parameters.clear();
+        this.parameters.put("FILTER", request.getParameter("txtNombreCurso"));
+        this.parameters.put("SQL_ORDER_BY", "NOMBRE ASC");
+        if (request.getParameter("sizePageCurso").equals("ALL")) {
+            this.parameters.put("SQL_LIMIT", "");
+        } else {
+            this.parameters.put("SQL_LIMIT", " LIMIT " + request.getParameter("sizePageCurso") + " offset "
+                    + (Integer.parseInt(request.getParameter("numberPageCurso")) - 1) * Integer.parseInt(request.getParameter("sizePageCurso")));
+        }
+        if(request.getParameter("cboEstadoCurso").equals("-1")){
+            this.parameters.put("SQL_ESTADO", "");
+        }else{
+            this.parameters.put("SQL_ESTADO"," AND ESTADO = '"+ request.getParameter("cboEstadoCurso") + "' ");
+        }
+        return this.parameters;
+    }
+
+    private Curso getCurso(HttpServletRequest request) {
+        Curso curso = new Curso();
+        if (request.getParameter("accion").equals("updateCurso")) {
+            curso.setIdcurso(Integer.parseInt(request.getParameter("txtIdCursoER")));
+        }
+        curso.setNombre(request.getParameter("txtNombreCursoER"));
+        curso.setEstado(request.getParameter("cboEstadoCursoER"));
+        LOG.info(request.getParameter("cboEstadoCursoER"));
+        return curso;
+    }
+    
+
+    
     /**
      * Returns a short description of the servlet.
      *
@@ -124,41 +169,4 @@ public class LibroAPI extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-    private Libro getLibro(HttpServletRequest request) {
-       Libro libro = new Libro();
-        try {
-            if (request.getParameter("accion").equals("updateLibro")) {
-                libro.setIdlibro(Integer.parseInt(request.getParameter("txtIdLibroER")));
-            }
-            libro.setNombre(request.getParameter("txtNombreLibroER"));
-            libro.setFechaPublicacion(ParceDate.getDate(request.getParameter("txtFecha-PublicacionLibroER"), "dd/MM/yyyy"));
-            libro.setGenero(request.getParameter("txtGeneroLibroER"));
-            libro.setEdicion(request.getParameter("txtEdicionLibroER"));
-            libro.setAutor(new Autor(Integer.parseInt(request.getParameter("cboAutorLibroER"))));
-        } catch (Exception ex) {
-            Logger.getLogger(LibroAPI.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return libro;
-    }
-
-    private void procesarLibro(BEAN_CRUD beancrud, HttpServletResponse response) {
-        try {
-            this.json_respose = this.jsonParse.toJson(beancrud);
-            LOG.info(this.json_respose);
-            response.setContentType("application/json");
-            response.getWriter().write(this.json_respose);
-        } catch (IOException ex) {
-            Logger.getLogger(LibroAPI.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    private HashMap<String, Object> getParameters(HttpServletRequest request) {
-        this.parameters.clear();
-        this.parameters.put("FILTER", request.getParameter("txtNombreLibro"));
-        this.parameters.put("SQL_ORDER_BY", " NOMBRE ASC ");
-        this.parameters.put("SQL_LIMIT", " LIMIT " + request.getParameter("sizePageLibro") + " offset "
-                + (Integer.parseInt(request.getParameter("numberPageLibro")) - 1) * Integer.parseInt(request.getParameter("sizePageLibro")));
-        return this.parameters;
-
-    }
 }

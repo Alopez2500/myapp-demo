@@ -87,7 +87,7 @@ function listarLibro(BEAN_PAGINATION) {
     var $pagination = $('#paginationLibro');
     $('#tbodyLibro').empty();
     $pagination.twbsPagination('destroy');
-    $('#nameCrudLibro').html("[ " + BEAN_PAGINATION.COUNT_FILTER + " ] Libro");
+    $('#nameCrudLibro').html("[ " + BEAN_PAGINATION.COUNT_FILTER + " ] LIBROS");
     if (BEAN_PAGINATION.COUNT_FILTER > 0) {
         var fila;
         var atributos;

@@ -75,7 +75,7 @@ function listarAutor(BEAN_PAGINATION) {
     var $pagination = $('#paginationAutor');
     $('#tbodyAutor').empty();
     $pagination.twbsPagination('destroy');
-    $('#nameCrudAutor').html("[ " + BEAN_PAGINATION.COUNT_FILTER + " ] Cliente");
+    $('#nameCrudAutor').html("[ " + BEAN_PAGINATION.COUNT_FILTER + " ] AUTORES");
     if (BEAN_PAGINATION.COUNT_FILTER > 0) {
         var fila;
         var atributos;
